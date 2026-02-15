@@ -1,0 +1,109 @@
+direction: down
+
+# --- Source ---
+source: {
+  label: "Google Drive"
+  shape: cylinder
+
+  mmbak: {
+    label: ".mmbak (weekly)"
+    shape: page
+  }
+}
+
+# --- Orchestration ---
+dagster: {
+  label: "Dagster (VPS)"
+
+  sensor: {
+    label: "Schedule / Sensor\nWeekly trigger"
+  }
+
+  ingestion: {
+    label: "Ingestion Asset\nGDrive → MotherDuck"
+  }
+
+  dbt_assets: {
+    label: "dbt Assets\nstaging → intermediate → marts"
+  }
+
+  semantic_sync: {
+    label: "Semantic Sync\nCompile context doc"
+  }
+
+  sensor -> ingestion -> dbt_assets -> semantic_sync
+}
+
+# --- Warehouse ---
+motherduck: {
+  label: "MotherDuck\n(Cloud DuckDB)"
+  shape: cylinder
+}
+
+# --- Semantic Layer ---
+semantic: {
+  label: "Semantic Layer (Docs as Code)"
+
+  dbml: {
+    label: "DBML\nPhysical schema\nTables · Types · Refs"
+    shape: document
+  }
+
+  dbt_yaml: {
+    label: "dbt YAML\nBusiness semantics\nMetrics · Descriptions"
+    shape: document
+  }
+
+  context_doc: {
+    label: "Compiled Context Doc\nUnified schema ref for AI"
+    shape: page
+  }
+
+  dbml -> context_doc
+  dbt_yaml -> context_doc
+}
+
+# --- AI Layer ---
+ai: {
+  label: "AI Agent"
+
+  text_to_sql: {
+    label: "Text-to-SQL\n(Vanna.ai)"
+  }
+
+  chart_reasoning: {
+    label: "Chart Reasoning\nData → ECharts config"
+  }
+
+  text_to_sql -> chart_reasoning
+}
+
+# --- Frontend ---
+frontend: {
+  label: "Frontend App (TBD)"
+
+  chat: {
+    label: "Chat UI"
+  }
+
+  dashboard: {
+    label: "Pinned Dashboards"
+  }
+
+  charts: {
+    label: "Chart Renderer"
+  }
+}
+
+# --- Connections ---
+source -> dagster.sensor: "new .mmbak detected"
+dagster.ingestion -> motherduck: "load raw tables"
+motherduck -> dagster.dbt_assets: "source"
+dagster.dbt_assets -> semantic.dbt_yaml: "generates"
+dagster.semantic_sync -> semantic.context_doc: "compiles"
+
+semantic.context_doc -> ai.text_to_sql: "schema context" {style.stroke-dash: 3}
+motherduck <-> ai.text_to_sql: "SQL queries"
+ai.chart_reasoning -> frontend.charts: "data + chart config"
+ai.text_to_sql <-> frontend.chat: "streaming"
+motherduck -> frontend.dashboard: "direct queries"

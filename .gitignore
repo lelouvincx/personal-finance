@@ -1,0 +1,29 @@
+# Raw data backups
+data/*.mmbak
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+*.egg-info/
+
+# dbt
+orchestration/transform/target/
+orchestration/transform/dbt_packages/
+orchestration/transform/logs/
+
+# Dagster
+.dagster/
+storage/
+
+# Frontend
+app/node_modules/
+app/.next/
+app/dist/
+
+# Environment
+.env
+.env.local
+
+# OS
+.DS_Store

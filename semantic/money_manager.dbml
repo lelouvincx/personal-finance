@@ -1,0 +1,452 @@
+// Money Manager App - Database Schema
+// Source: MMAuto[GF260215](2-15-26-103550).mmbak
+
+Project money_manager {
+  database_type: 'SQLite'
+  Note: 'Money Manager mobile app backup database schema'
+}
+
+Table INOUTCOME {
+  AID integer [pk, note: 'Primary key']
+  uid text [unique, note: 'Unique identifier']
+  assetUid text [note: 'FK to ASSETS.uid - source account']
+  CARDDIVIDMONTH varchar
+  ctgUid text [note: 'FK to ZCATEGORY.uid - category']
+  toAssetUid text [note: 'FK to ASSETS.uid - destination account (transfers)']
+  ZCONTENT varchar [note: 'Transaction description/payee']
+  ZDATE varchar [note: 'Transaction date (millisecond Unix timestamp)']
+  WDATE varchar [note: 'Write/created date']
+  wtime text
+  paid text
+  DO_TYPE varchar [note: '0=Income, 1=Expense, 3=Transfer Out, 4=Transfer In, 7=Other']
+  ZMONEY varchar [note: 'Transaction amount']
+  txUidTrans text [note: 'Linked transfer transaction uid']
+  ZDATA varchar
+  SMS_RDATE varchar [note: 'SMS received date']
+  IN_ZMONEY varchar
+  ASSET_NIC varchar [note: 'Denormalized asset nickname']
+  CATEGORY_NAME varchar [note: 'Denormalized category name']
+  cardDivideUid text
+  CARD_DIVIDE_MONTH_STR varchar
+  MARK integer
+  txUidFee text [note: 'Linked fee transaction uid']
+  SMS_ORIGIN varchar
+  SMS_PARSE_CONTENT varchar
+  IS_DEL integer [note: 'Soft delete flag']
+  UTIME integer [note: 'Update timestamp']
+  currencyUid text [note: 'FK to CURRENCY.uid']
+  AMOUNT_ACCOUNT real [note: 'Amount in account currency']
+  lat text [note: 'Latitude']
+  lng text [note: 'Longitude']
+  gstd text
+  isSynced integer
+  syncTime real
+  syncVersion integer
+
+  indexes {
+    DO_TYPE [name: 'INOUTCOME_IDX2']
+    ZDATE [name: 'INOUTCOME_IDX3']
+    WDATE [name: 'INOUTCOME_IDX4']
+    SMS_RDATE [name: 'INOUTCOME_IDX5']
+    UTIME [name: 'INOUTCOME_IDX6']
+    assetUid [name: 'INOUTCOME_IDX7']
+    ctgUid [name: 'INOUTCOME_IDX8']
+    currencyUid [name: 'INOUTCOME_IDX9']
+  }
+
+  Note: 'Main transactions table - income, expenses, and transfers'
+}
+
+Table ASSETS {
+  ID integer [pk, increment]
+  CARD_DAY_FIN varchar [note: 'Card billing cycle end day']
+  CARD_DAY_PAY varchar [note: 'Card payment due day']
+  NIC_NAME varchar [note: 'Account display name']
+  ORDERSEQ integer [note: 'Display order']
+  ZDATA varchar
+  ZDATA1 varchar
+  ZDATA2 varchar
+  IS_TRANS_EXPENSE integer [note: 'Count transfers as expense']
+  IS_CARD_AUTO_PAY integer
+  APP_PACKAGE varchar
+  APP_NAME varchar
+  SMS_TEL varchar
+  SMS_STRING varchar
+  A_UTIME integer [note: 'Update timestamp']
+  CARD_USAGE_HURDLE_TYPE integer
+  CARD_USAGE_HURDLE_START_DATE real
+  CARD_USAGE_HURDLE_AMOUNT real
+  uid text [unique, note: 'Unique identifier']
+  currencyUid text [note: 'FK to CURRENCY.uid']
+  cardAssetUid text [note: 'FK to ASSETS.uid - linked card account']
+  groupUid text [note: 'FK to ASSETGROUP.uid']
+  isSynced integer
+  syncTime real
+  syncVersion integer
+
+  Note: 'Accounts/wallets (Cash, Momo, BIDV, CAKE, etc.)'
+}
+
+Table ZCATEGORY {
+  ID integer [pk, increment]
+  C_IS_DEL integer [note: 'Soft delete flag']
+  C_UTIME integer [note: 'Update timestamp']
+  uid text [unique, note: 'Unique identifier']
+  NAME varchar [note: 'Category display name']
+  ORDERSEQ integer [note: 'Display order']
+  TYPE integer [note: '0=Income, 1=Expense']
+  STATUS integer
+  pUid text [note: 'FK to ZCATEGORY.uid - parent category']
+  isSynced integer
+  syncTime real
+  syncVersion integer
+
+  Note: 'Income and expense categories (hierarchical via pUid)'
+}
+
+Table ASSETGROUP {
+  DEVICE_ID integer [pk, increment]
+  uid text [unique, note: 'Unique identifier']
+  IS_DEL integer [note: 'Soft delete flag']
+  USETIME integer
+  ACC_GROUP_NAME varchar [note: 'Group display name']
+  TYPE integer
+  ORDERSEQ integer [note: 'Display order']
+  isSynced integer
+  syncTime real
+  syncVersion integer
+
+  Note: 'Groups for organizing accounts/assets'
+}
+
+Table CURRENCY {
+  ID integer [pk, increment]
+  uid varchar [unique, note: 'Unique identifier']
+  NAME varchar [note: 'Display name (e.g. VND - Vietnam)']
+  ISO varchar [note: 'ISO 4217 code (e.g. VND, USD)']
+  MAIN_ISO varchar
+  IS_DEL integer [note: 'Soft delete flag']
+  ORDER_SEQ integer [note: 'Display order']
+  RATE real [note: 'Exchange rate to main currency']
+  SYMBOL varchar [note: 'Currency symbol (e.g. ₫, US$)']
+  INSERT_TYPE varchar
+  SYMBOL_POSITION varchar
+  IS_MAIN_CURRENCY integer [note: '1 = primary currency']
+  IS_SHOW integer
+  MODIFY_DATE integer
+  DECIMAL_POINT integer
+  isSynced integer
+  syncTime real
+  syncVersion integer
+
+  Note: 'Supported currencies and exchange rates'
+}
+
+Table BUDGET {
+  ID integer [pk, increment]
+  uid text [unique, note: 'Unique identifier']
+  targetUid text [note: 'FK to ZCATEGORY.uid or ASSETS.uid - budget target']
+  DO_TYPE integer [note: 'Budget type']
+  PERIOD_TYPE integer [note: 'Period: weekly, monthly, yearly, etc.']
+  IS_TOTAL integer
+  IS_DEL integer [note: 'Soft delete flag']
+  TRANSFER_TYPE integer
+  ORDER_SEQ integer
+  MODIFY_DATE integer
+  isSynced integer
+  syncTime real
+  syncVersion integer
+
+  Note: 'Budget definitions'
+}
+
+Table BUDGET_AMOUNT {
+  ID integer [pk, increment]
+  uid text [unique, note: 'Unique identifier']
+  budgetUid text [note: 'FK to BUDGET.uid']
+  IS_DEL integer [note: 'Soft delete flag']
+  AMOUNT real [note: 'Budget amount']
+  BUDGET_PERIOD integer [note: 'Budget period identifier']
+  MODIFY_DATE integer
+  isSynced integer
+  syncTime real
+  syncVersion integer
+
+  Note: 'Budget amounts per period'
+}
+
+Table REPEATTRANSACTION {
+  DEVICE_ID integer [pk, increment]
+  uid text [unique, note: 'Unique identifier']
+  IS_DEL integer [note: 'Soft delete flag']
+  USETIME integer
+  MARK integer
+  END_DATE integer [note: 'Recurrence end date']
+  NEXT_DATE integer [note: 'Next scheduled date']
+  DO_TYPE integer [note: '0=Income, 1=Expense, 3/4=Transfer']
+  REPEAT_TYPE integer [note: 'Recurrence frequency']
+  assetUid text [note: 'FK to ASSETS.uid']
+  toAssetUid text [note: 'FK to ASSETS.uid - for transfers']
+  ctgUid text [note: 'FK to ZCATEGORY.uid']
+  currencyUid text [note: 'FK to CURRENCY.uid']
+  AMOUNT_SUB real [note: 'Transaction amount']
+  MEMO varchar
+  PAYEE varchar
+  isSynced integer
+  syncTime real
+  syncVersion integer
+
+  Note: 'Recurring/scheduled transactions'
+}
+
+Table FAVTRANSACTION {
+  DEVICE_ID integer [pk, increment]
+  uid text [unique, note: 'Unique identifier']
+  IS_DEL integer [note: 'Soft delete flag']
+  USETIME integer
+  MARK integer
+  DO_TYPE integer [note: '0=Income, 1=Expense, 3/4=Transfer']
+  assetUid text [note: 'FK to ASSETS.uid']
+  toAssetUid text [note: 'FK to ASSETS.uid - for transfers']
+  ctgUid text [note: 'FK to ZCATEGORY.uid']
+  AMOUNT_SUB real [note: 'Transaction amount']
+  currencyUid integer [note: 'FK to CURRENCY.uid']
+  MEMO varchar
+  PAYEE varchar
+  ORDERSEQ integer [note: 'Display order']
+  isSynced integer
+  syncTime real
+  syncVersion integer
+
+  Note: 'Favorite/template transactions for quick entry'
+}
+
+Table TAG {
+  id integer [pk, increment]
+  uid text [unique, note: 'Unique identifier']
+  name text [note: 'Tag display name']
+  orderSeq integer [note: 'Display order']
+  isDel integer [note: 'Soft delete flag']
+  utime real [note: 'Update timestamp']
+  isSynced integer
+  syncTime real
+  syncVersion integer
+
+  Note: 'User-defined tags for transactions'
+}
+
+Table TX_TAG {
+  id integer [pk, increment]
+  uid text [unique, note: 'Unique identifier']
+  txUid text [note: 'FK to INOUTCOME.uid - tagged transaction']
+  tagUid text [note: 'FK to TAG.uid']
+  objName text [note: 'Source table name']
+  orderSeq integer
+  isDel integer [note: 'Soft delete flag']
+  utime real
+  isSynced integer
+  syncTime real
+  syncVersion integer
+
+  indexes {
+    txUid [name: 'TX_TAG_IDX1']
+  }
+
+  Note: 'Many-to-many join between transactions and tags'
+}
+
+Table PHOTO {
+  DEVICE_ID integer [pk, increment]
+  uid text [unique, note: 'Unique identifier']
+  IS_DEL integer [note: 'Soft delete flag']
+  USETIME integer
+  txUid text [note: 'FK to INOUTCOME.uid - associated transaction']
+  FILE_SIZE integer
+  FILE_PATH varchar
+  FILE_NAME varchar
+  ORG_FILE_NAME varchar
+  ORG_FILE_PATH varchar
+  isSynced integer
+  syncTime real
+  syncVersion integer
+
+  Note: 'Receipt/photo attachments for transactions'
+}
+
+Table MEMO {
+  id integer [pk, increment]
+  uid text [unique, note: 'Unique identifier']
+  title text
+  content text
+  memoTime real
+  memoDate text
+  pinned integer
+  pinnedTime real
+  orderSeq integer
+  color text
+  isDel integer [note: 'Soft delete flag']
+  utime real
+  isSynced integer
+  syncTime real
+  syncVersion integer
+
+  Note: 'User memos/notes'
+}
+
+Table MESSAGEMACRO2 {
+  AID integer [pk, increment]
+  uid text [unique, note: 'Unique identifier']
+  conAssetUid text [note: 'FK to ASSETS.uid']
+  MACROASSETNAME varchar
+  MACROTYPE integer
+  SMS_TEL varchar [note: 'SMS sender phone number']
+  MODIDATE varchar
+  USEYN varchar
+  APP_PACKAGE varchar
+  APP_NAME varchar
+  ORDERSEQ integer
+  utime real
+  isSynced integer
+  syncTime real
+  syncVersion integer
+
+  indexes {
+    SMS_TEL [name: 'MESSAGEMACRO2_IDX1']
+  }
+
+  Note: 'SMS parsing rules for auto-importing transactions'
+}
+
+Table SMS_RAW_READ {
+  ID integer [pk, increment]
+  uid text [unique, note: 'Unique identifier']
+  RDATE varchar
+  ZDATE integer
+  TEL varchar
+  ZDATA varchar
+  MACROTYPE integer
+  assetUid text [note: 'FK to ASSETS.uid']
+  toAssetUid text [note: 'FK to ASSETS.uid']
+  NOTIFY_TYPE integer
+  AMOUNT varchar
+  TEXT_PARSING_TIME integer
+  ASSETNAME varchar
+  TYPE varchar
+  MMSID integer
+  APP_PACKAGE varchar
+  APP_NAME varchar
+  SENDER_NAME varchar
+  IS_DEL integer [note: 'Soft delete flag']
+  utime real
+  isSynced integer
+  syncTime real
+  syncVersion integer
+
+  indexes {
+    ZDATE [name: 'SMS_RAW_READ_IDX1']
+    ZDATA [name: 'SMS_RAW_READ_IDX2']
+    RDATE [name: 'SMS_RAW_READ_IDX3']
+    assetUid [name: 'SMS_RAW_READ_IDX4']
+  }
+
+  Note: 'Raw SMS messages read for auto-import'
+}
+
+Table ZETC {
+  Z_PK integer [pk, increment]
+  uid text [unique, note: 'Unique identifier']
+  E_UTIME integer
+  ZDATATYPE integer
+  ZDATA varchar
+  ZZDATA varchar
+  ZZDATA1 varchar
+  ZZDATA2 varchar
+  dataTypeKey varchar
+  isDel integer [note: 'Soft delete flag']
+  isSynced integer
+  syncTime real
+  syncVersion integer
+
+  Note: 'App settings and miscellaneous key-value data'
+}
+
+Table CODE_DATA {
+  id integer [pk, increment]
+  uid text [unique, note: 'Unique identifier']
+  code text
+  data text
+  num integer
+  isDel integer [note: 'Soft delete flag']
+  utime real
+  ctime real
+  isSynced integer
+  syncTime real
+  syncVersion integer
+
+  Note: 'Generic code/data store'
+}
+
+Table CODE_LINK {
+  id integer [pk, increment]
+  uid text [unique, note: 'Unique identifier']
+  codeUid text [note: 'FK to CODE_DATA.uid']
+  tableName text [note: 'Referenced table name']
+  tableUid text [note: 'Referenced row uid']
+  orderSeq integer
+  isDel integer [note: 'Soft delete flag']
+  utime real
+  ctime real
+  isSynced integer
+  syncTime real
+  syncVersion integer
+
+  Note: 'Links CODE_DATA entries to rows in other tables'
+}
+
+// ---- Relationships ----
+
+// Transactions -> Accounts
+Ref: INOUTCOME.assetUid > ASSETS.uid
+Ref: INOUTCOME.toAssetUid > ASSETS.uid
+Ref: INOUTCOME.ctgUid > ZCATEGORY.uid
+Ref: INOUTCOME.currencyUid > CURRENCY.uid
+Ref: INOUTCOME.txUidTrans > INOUTCOME.uid
+
+// Assets -> Groups & Currency
+Ref: ASSETS.groupUid > ASSETGROUP.uid
+Ref: ASSETS.currencyUid > CURRENCY.uid
+Ref: ASSETS.cardAssetUid > ASSETS.uid
+
+// Category hierarchy
+Ref: ZCATEGORY.pUid > ZCATEGORY.uid
+
+// Budget
+Ref: BUDGET_AMOUNT.budgetUid > BUDGET.uid
+
+// Recurring transactions
+Ref: REPEATTRANSACTION.assetUid > ASSETS.uid
+Ref: REPEATTRANSACTION.toAssetUid > ASSETS.uid
+Ref: REPEATTRANSACTION.ctgUid > ZCATEGORY.uid
+Ref: REPEATTRANSACTION.currencyUid > CURRENCY.uid
+
+// Favorite transactions
+Ref: FAVTRANSACTION.assetUid > ASSETS.uid
+Ref: FAVTRANSACTION.toAssetUid > ASSETS.uid
+Ref: FAVTRANSACTION.ctgUid > ZCATEGORY.uid
+
+// Tags (many-to-many)
+Ref: TX_TAG.txUid > INOUTCOME.uid
+Ref: TX_TAG.tagUid > TAG.uid
+
+// Photos -> Transactions
+Ref: PHOTO.txUid > INOUTCOME.uid
+
+// SMS macros -> Assets
+Ref: MESSAGEMACRO2.conAssetUid > ASSETS.uid
+
+// SMS raw -> Assets
+Ref: SMS_RAW_READ.assetUid > ASSETS.uid
+Ref: SMS_RAW_READ.toAssetUid > ASSETS.uid
+
+// Code links
+Ref: CODE_LINK.codeUid > CODE_DATA.uid
