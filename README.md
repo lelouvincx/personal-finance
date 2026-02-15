@@ -16,15 +16,17 @@ This project aims to leverage the data from the Money Manager app to create a pe
 
 Some requirements I have in mind:
 
-- AI-first: When I ask a question in chat, it query data and give me the personal, customized answer with my own taste.
+- AI-first: When I ask a question in chat, it query data and **give me the personal, customized answer with my own taste**.
 - In order to do that there should be a strong semantic foundation.
 - Leverage my existing skills such as SQL, Python, data visualizations.
 - In the future, be able to connect different data sources such as Logseq, Calendar, Maps to give me a more holistic view of my life and finances.
-- A playground to practice my data skills, as well as learning frontend.
+- **A playground to practice my data skills, as well as learning frontend.**
 
 Detailed data is my personal, sensitive data, so I will not share it here. But I'll share the fake data and the code to generate it, so that you can run the project on your own.
 
 See [AGENTS.md](AGENTS.md) for architecture, decisions, and conventions.
+
+![architecture](https://media.secondbrain.lelouvincx.com/2026/02/56cc15cbc9fe24d3ef49463c76400836.png)
 
 ## Roadmap
 
