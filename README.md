@@ -7,6 +7,7 @@ Personal finance BI platform built on Money Manager app data.
 I have been using the Money Manager app for years to track my finances since I started go to work. Up to 2026, it's been 3 years.
 
 Example app:
+
 ![example app](https://media.secondbrain.lelouvincx.com/2026/02/344c2c0fba0700749a5a5196e6bac1e8.png)
 
 The thing I love from Money Manager is that it's very simple. Just a simple UI where I input daily transactions. The hardest thing IMO is forming the habit of recording every transaction (no matter how small it is). **Luckily I got it on track.**
@@ -26,6 +27,7 @@ Some requirements I have in mind:
 Detailed data is my personal, sensitive data, so I will not share it here. But I'll share the fake data and the code to generate it, so that you can run the project on your own.
 
 Architecture (diagram at [architecture.d2](architecture.d2)):
+
 ![architecture](https://media.secondbrain.lelouvincx.com/2026/02/56cc15cbc9fe24d3ef49463c76400836.png)
 
 See [AGENTS.md](AGENTS.md) for architecture, decisions, and conventions.
