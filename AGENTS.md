@@ -67,3 +67,46 @@ personal-finance/                       # Monorepo root
 - dbt: staging models prefix `stg_`, intermediate `int_`, marts `fct_`/`dim_`. Metrics defined in YAML `meta:` block.
 - DBML: keep `money_manager.dbml` in sync when schema changes. Include `Ref:` for all foreign keys and `Note:` for business context.
 - Currency is VND (₫) primary. All amounts should be normalized to VND using `CURRENCY.RATE`.
+
+## Roadmap
+
+### Phase 1 + 2 — Analytics foundation + AI interface (current)
+
+Built incrementally per Kimball: pick a business process → build end-to-end (source → staging → mart → semantic → AI/visualization) → iterate. Phase 1 (data) and Phase 2 (AI) interleave — each iteration delivers a working slice.
+
+**Infrastructure (once):**
+
+- Dagster orchestration: GDrive sensor → download .mmbak → ingest to MotherDuck
+- Semantic layer: DBML + dbt YAML → compiled context doc
+- Vanna.ai text-to-SQL + LLM chart reasoning wired up
+
+**Iterations (demand-driven, each end-to-end):**
+
+| #   | Business Process  | Key Mart                 | New Models                                              |
+| --- | ----------------- | ------------------------ | ------------------------------------------------------- |
+| 1   | Monthly cashflow  | `fct_monthly_cashflow`   | `stg_transactions`, `stg_accounts`, `dim_accounts`      |
+| 2   | Category spending | `fct_category_spending`  | `stg_categories`, `int_category_tree`, `dim_categories` |
+| 3   | Budget vs actual  | `fct_budget_vs_actual`   | `stg_budgets`                                           |
+| 4   | Account balances  | `fct_account_balances`   | reuses existing staging                                 |
+| 5   | Time patterns     | `fct_daily_transactions` | `dim_calendar`                                          |
+
+### Phase 3 — Own data entry
+
+- Transaction API (CRUD + validation)
+- OLTP store (Turso / Postgres) for writes, sync to MotherDuck for analytics
+- Shared NLP layer: LLM parses free-text input ("coffee 35k") → structured transaction
+- Chat bot as first entry point — Telegram, Messenger, or Zalo (whichever you use most daily)
+- Replaces weekly .mmbak export cycle with real-time data flow
+
+### Phase 4 — Web/PWA
+
+- Web app with form + free-text entry
+- Installable PWA, offline-first (local write → background sync)
+- Consolidate Record (enter tx) + Analyze (chat + dashboards) into one app
+- Replace Money Manager mobile app entirely
+
+### Phase 5 — Multi-source intelligence
+
+- Connect Logseq, Calendar, Maps for holistic life + finance view
+- Cross-source insights (e.g., spending patterns vs calendar events)
+- Additional entry points: Slack bot, bank SMS auto-import

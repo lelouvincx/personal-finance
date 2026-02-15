@@ -6,9 +6,10 @@ Personal finance BI platform built on Money Manager app data.
 
 I have been using the Money Manager app for years to track my finances since I started go to work. Up to 2026, it's been 3 years.
 
+Example app:
 ![example app](https://media.secondbrain.lelouvincx.com/2026/02/344c2c0fba0700749a5a5196e6bac1e8.png)
 
-The thing I love from Money Manager is that it's very simple. Just a simple UI where I input daily transactions. The hardest thing IMO is to form the habit of recording every transaction (no matter how small it is). Luckily I got it on track.
+The thing I love from Money Manager is that it's very simple. Just a simple UI where I input daily transactions. The hardest thing IMO is forming the habit of recording every transaction (no matter how small it is). **Luckily I got it on track.**
 
 At the beginning, I always thought about the idea of using my personal finance data to do an analytics project. But never complete it, until now. Also, having a fair amount of data, I think it's a good time to start this project.
 
@@ -24,7 +25,9 @@ Some requirements I have in mind:
 
 Detailed data is my personal, sensitive data, so I will not share it here. But I'll share the fake data and the code to generate it, so that you can run the project on your own.
 
+Architecture (diagram at [architecture.d2](architecture.d2)):
 ![architecture](https://media.secondbrain.lelouvincx.com/2026/02/56cc15cbc9fe24d3ef49463c76400836.png)
+
 See [AGENTS.md](AGENTS.md) for architecture, decisions, and conventions.
 
 ## Roadmap
@@ -37,7 +40,7 @@ See [AGENTS.md](AGENTS.md) for architecture, decisions, and conventions.
 
 While waiting for progress, you may want to have a sip with me :D
 
-![](https://media.secondbrain.lelouvincx.com/2026/01/8085eaaf5de0322cedd6246447fa33b4.png)
+![have a sip](https://media.secondbrain.lelouvincx.com/2026/01/8085eaaf5de0322cedd6246447fa33b4.png)
 
 ## License
 
