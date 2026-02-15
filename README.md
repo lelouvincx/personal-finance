@@ -24,9 +24,8 @@ Some requirements I have in mind:
 
 Detailed data is my personal, sensitive data, so I will not share it here. But I'll share the fake data and the code to generate it, so that you can run the project on your own.
 
-See [AGENTS.md](AGENTS.md) for architecture, decisions, and conventions.
-
 ![architecture](https://media.secondbrain.lelouvincx.com/2026/02/56cc15cbc9fe24d3ef49463c76400836.png)
+See [AGENTS.md](AGENTS.md) for architecture, decisions, and conventions.
 
 ## Roadmap
 
@@ -36,7 +35,7 @@ See [AGENTS.md](AGENTS.md) for architecture, decisions, and conventions.
 - [ ] Data pipeline: transformation
 - ...
 
-While waiting for progress, you may want to have a sip :D
+While waiting for progress, you may want to have a sip with me :D
 
 ![](https://media.secondbrain.lelouvincx.com/2026/01/8085eaaf5de0322cedd6246447fa33b4.png)
 
